@@ -12,7 +12,7 @@ class Course {
 
   double get average {
     if (scores.isNotEmpty) {
-      double total = scores.fold(0, (prev, score) => prev + score.studenScore);
+      double total = scores.fold(0, (prev, score) => prev + score.studentScore);
       return total / scores.length;
     }
     return 0;
@@ -20,8 +20,8 @@ class Course {
 }
 
 class CourseScore {
-  const CourseScore({required this.studentName, required this.studenScore});
+  const CourseScore({required this.studentName, required this.studentScore});
 
   final String studentName;
-  final double studenScore;
+  final double studentScore;
 }

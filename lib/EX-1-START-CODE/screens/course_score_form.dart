@@ -1,5 +1,5 @@
+// lib/screens/course_score_form.dart
 import 'package:flutter/material.dart';
-
 import '../models/course.dart';
 
 const Color mainColor = Colors.blue;
@@ -15,45 +15,32 @@ class CourseScoreForm extends StatefulWidget {
 
 class _CourseScoreFormState extends State<CourseScoreForm> {
   final _formKey = GlobalKey<FormState>();
-
-  late String _enteredName;
-  late double _enteredScore;
-
-  @override
-  void initState() {
-    super.initState();
-    _enteredName = '';
-    _enteredScore = 50;
-  }
+  String _enteredName = '';
+  double _enteredScore = 50;
 
   void _saveItem() {
-    bool isValid = _formKey.currentState!.validate();
-
-    if (isValid) {
+    if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      Navigator.of(
-        context,
-      ).pop(CourseScore(studentName: _enteredName, studenScore: _enteredScore));
+      Navigator.of(context).pop(
+        CourseScore(studentName: _enteredName, studentScore: _enteredScore),
+      );
     }
   }
 
   String? validateName(String? value) {
-    if (value == null ||
-        value.isEmpty ||
-        value.trim().length <= 1 ||
-        value.trim().length > 50) {
+    if (value == null || value.trim().isEmpty || value.trim().length > 50) {
       return 'Must be between 1 and 50 characters.';
     }
     return null;
   }
 
   String? validateScore(String? value) {
-    if (value == null ||
-        value.isEmpty ||
-        double.tryParse(value) == null ||
-        double.tryParse(value)! < 0 ||
-        double.tryParse(value)! > 100) {
-      return 'Must be a score bteween 0 and 100';
+    if (value == null || value.trim().isEmpty) {
+      return 'Score cannot be empty.';
+    }
+    final score = double.tryParse(value);
+    if (score == null || score < 0 || score > 100) {
+      return 'Must be a score between 0 and 100.';
     }
     return null;
   }
@@ -84,19 +71,31 @@ class _CourseScoreFormState extends State<CourseScoreForm> {
               ),
               const SizedBox(height: 10),
               TextFormField(
-                decoration: const InputDecoration(label: Text('Score')),
                 initialValue: _enteredScore.toString(),
+                decoration: const InputDecoration(label: Text('Score')),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 validator: validateScore,
                 onSaved: (value) {
                   _enteredScore = double.parse(value!);
                 },
               ),
               const Expanded(child: SizedBox(height: 12)),
-              ElevatedButton(
-                onPressed: _saveItem,
-                child: const Text("Add score"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: _saveItem,
+                    child: const Text("Add Score"),
+                  ),
+                ],
               ),
-              const SizedBox(height: 12),
             ],
           ),
         ),
